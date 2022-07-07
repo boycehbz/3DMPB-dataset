@@ -139,6 +139,24 @@ def draw_skeleton(img, kpt, connection=None, colors=None, bbox=None):
         
     return canvas
 
+def draw_mask(img, mask, thickness=3, color=(255, 0, 0)):
+    def _get_edge(mask, thickness=3):
+        dtype = mask.dtype
+        x=cv2.Sobel(np.float32(mask),cv2.CV_16S,1,0, ksize=thickness) 
+        y=cv2.Sobel(np.float32(mask),cv2.CV_16S,0,1, ksize=thickness)
+        absX=cv2.convertScaleAbs(x)
+        absY=cv2.convertScaleAbs(y)  
+        edge = cv2.addWeighted(absX,0.5,absY,0.5,0)
+        return edge.astype(dtype)
+    
+    _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
+    img = img.copy()
+    canvas = np.zeros(img.shape, img.dtype) + color
+    img[mask > 0] = img[mask > 0] * 0.8 + canvas[mask > 0] * 0.2
+    edge = _get_edge(mask, thickness)
+    img[edge > 0] = img[edge > 0] * 0.2 + canvas[edge > 0] * 0.8
+    return img
+
     
 def vis_kpt_2d(json_file, ImgDir, output_dir):
 
@@ -168,12 +186,17 @@ def vis_kpt_2d(json_file, ImgDir, output_dir):
             img = draw_bbox(img, bbox, thickness=3, color=colors[i%len(colors)])
             # vis = data['annotations'][i]['vis']  #14
             kpt = data['annotations'][i]['smpl_joints_2d']
+            mask_file = data['annotations'][i]['mask_file']
+            Maks_dir = ImgDir.replace('images', 'masks')
+            mask = cv2.imread(os.path.join(Maks_dir, mask_file))
             if kpt is not None:
                 img = draw_skeleton(img, kpt, connection=None, colors=colors[i%len(colors)], bbox=bbox)
+            if mask is not None:
+                img = draw_mask(img, mask, thickness=3, color=colors[i%len(colors)])
 
         # cv2.imshow('img', img)
         # cv2.waitKey()
-        img_file = os.path.join(output_dir, data['img_file'])
+        img_file = os.path.join(output_dir, 'vis_img',data['img_file'])
         os.makedirs(os.path.dirname(img_file), exist_ok=True)
         cv2.imwrite(img_file, img)
     print('Finish!')
@@ -189,7 +212,7 @@ def main(**args):
 
 if __name__ == "__main__":
     import argparse
-    sys.argv = ["", "--json_file", "3DMPB-dataset/3DMPB/3DMPB.json", "--ImgDir", "3DMPB-dataset/3DMPB/images", "--output_dir", "output"]
+    sys.argv = ["", "--json_file", "3DMPB/3DMPB.json", "--ImgDir", "3DMPB/images", "--output_dir", "output"]
     parser = argparse.ArgumentParser()
     parser.add_argument('--json_file', type=str, help='directory of dataset json file')
     parser.add_argument('--ImgDir', type=str, help='directory of dataset images')

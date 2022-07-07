@@ -21,7 +21,7 @@ Dataset proposed in "Pose2UV: Single-shot Multi-person Mesh Recovery with Deep U
 
 ## Download Links
 
-- [Images & masks & Annotations]()
+- [Images & Masks & Annotations]()
 
 ## Installation
 ### Requirements 
