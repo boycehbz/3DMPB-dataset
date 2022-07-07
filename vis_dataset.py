@@ -6,7 +6,7 @@ import cv2
 import math
 import sys
 from tqdm import tqdm
-from cmd_parse import parse_config
+# from cmd_parse import parse_config
 from ochumanApi.ochuman import OCHuman
 
 def draw_bbox(img, bbox, thickness=3, color=(255, 0, 0)):
