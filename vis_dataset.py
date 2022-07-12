@@ -246,8 +246,8 @@ def main(**kwargs):
 
 if __name__ == "__main__":
     import argparse
-    sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output']
-    # sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output', '--vis_smpl=True']
+    # sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output']
+    sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output', '--vis_smpl=True']
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_dir', type=str, help='directory of dataset')
     parser.add_argument('--vis_smpl', default=False, type=bool, help='')
