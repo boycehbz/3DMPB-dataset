@@ -46,8 +46,8 @@ Please download the dataset above and extract under `./3DMPB`. Due to the licens
     |   |-- 000001_00.jpg
     |   |-- 000002_00.jpg
     |   |-- ...
-    |-- 3DMPB.json
-|-- models
+    |-- annot.json
+|-- data
 `-- |-- SMPL_NEUTRAL.pkl    
 ```
 ### Code installation
@@ -55,6 +55,12 @@ Please download the dataset above and extract under `./3DMPB`. Due to the licens
 ```
 git clone https://github.com/boycehbz/3DMPB-dataset
 cd/d 3DMPB-dataset
-python vis_dataset.py --json_file 3DMPB/3DMPB.josn  --ImgDir 3DMPB/images --output_dir output
+python vis_dataset.py --dataset_dir 3DMPB  --output_dir output 
+```
+#### visualize 3D meshes
+```
+git clone https://github.com/boycehbz/3DMPB-dataset
+cd/d 3DMPB-dataset
+python vis_dataset.py --dataset_dir 3DMPB  --output_dir output --vis_smpl True
 ```
 
