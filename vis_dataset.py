@@ -82,12 +82,16 @@ def draw_skeleton(img, kpt, connection=None, colors=None, bbox=None):
                        1: 'vis'}
         map_visible = {value: key for key, value in visible_map.items()}
         if connection is None:
-            connection = [[15, 12], [12, 9], [9, 13], [9, 14], 
-                        [16, 18], [18, 20], [20, 22], [13, 16],
-                        [17, 19], [19, 21], [21, 23], [14, 17],
-                        [9, 6], [6, 3], [3, 0], [0, 1], [0, 2],
-                        [2, 5], [5, 8], [8, 11],
-                        [1, 4], [4, 7], [7, 10]]                       
+            # connection = [[15, 12], [12, 9], [9, 13], [9, 14], 
+            #             [16, 18], [18, 20], [20, 22], [13, 16],
+            #             [17, 19], [19, 21], [21, 23], [14, 17],
+            #             [9, 6], [6, 3], [3, 0], [0, 1], [0, 2],
+            #             [2, 5], [5, 8], [8, 11],
+            #             [1, 4], [4, 7], [7, 10]] 
+            connection = [[13, 12], [12, 8], [8, 7], [7, 6], 
+                        [12, 9], [9, 10], [10, 11], 
+                        [12, 2], [2, 1], [1, 0], 
+                        [12, 3], [3, 4], [4, 5]]                      
         idxs_draw = [i for i in range(kpt.shape[0])]
                 
     if colors is None:
@@ -173,6 +177,8 @@ def vis_kpt_2d(dataset_dir='./3DMPB', output='./output', **kwargs):
     json_file = os.path.join(dataset_dir, 'annot.json')
     with open(json_file) as f:
         annotations = json.load(f)
+    with open('./3DMPB/3DMPB.json') as test:
+        test_data = json.load(test)
 
     for data in annotations:
 
@@ -191,7 +197,7 @@ def vis_kpt_2d(dataset_dir='./3DMPB', output='./output', **kwargs):
             bbox = [i for j in bbox_tmp for i in j]  # 2*2->4*1
             img = draw_bbox(img, bbox, thickness=3, color=colors[i%len(colors)])
             # vis = data['annotations'][i]['vis']  #14
-            kpt = data['annotations'][i]['lsp_joints_2d']
+            kpt = [j[:2] for j in data['annotations'][i]['lsp_joints_2d']]
             mask_file = data['annotations'][i]['mask_file']
             mask = cv2.imread(os.path.join(dataset_dir, mask_file))
             if kpt is not None:
@@ -246,8 +252,8 @@ def main(**kwargs):
 
 if __name__ == "__main__":
     import argparse
-    # sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output']
-    sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output', '--vis_smpl=True']
+    sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output']
+    # sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output', '--vis_smpl=True']
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_dir', type=str, help='directory of dataset')
     parser.add_argument('--vis_smpl', default=False, type=bool, help='')

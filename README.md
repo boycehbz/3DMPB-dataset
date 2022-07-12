@@ -54,7 +54,7 @@ Please download the dataset above and extract under `./3DMPB`. Due to the licens
 #### visualize 2D keypoints and boundingbox
 ```
 git clone https://github.com/boycehbz/3DMPB-dataset
-cd 3DMPB-dataset
+cd/d 3DMPB-dataset
 python vis_dataset.py --json_file 3DMPB/3DMPB.josn  --ImgDir 3DMPB/images --output_dir output
 ```
 
