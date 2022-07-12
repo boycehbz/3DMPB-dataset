@@ -1,13 +1,24 @@
+'''
+ @FileName    : vis_dataset.py
+ @EditTime    : 2022-07-10 16:40:05
+ @Author      : Buzhen Huang
+ @Email       : hbz@seu.edu.cn
+ @Description : 
+'''
+
 import os
 import json
-import pickle as pkl
+from matplotlib.pyplot import sca
 import numpy as np
+import torch
 import cv2
 import math
 import sys
 from tqdm import tqdm
-# from cmd_parse import parse_config
-from ochumanApi.ochuman import OCHuman
+from projection import joint_projection, surface_projection
+import smplx
+from smpl_torch_batch import SMPLModel
+from render import Renderer
 
 def draw_bbox(img, bbox, thickness=3, color=(255, 0, 0)):
     canvas = img.copy()
@@ -60,7 +71,7 @@ def draw_skeleton(img, kpt, connection=None, colors=None, bbox=None):
     #                      [16, 4], [15, 1]] # TODO
     #     idxs_draw = np.where(kpt[:, :, 2] != map_visible['missing'])[0]
         
-    if npart==24: # smpl(24 joints + transl)
+    if npart==14: # smpl(24 joints + transl)
         part_names = ['Left_Hip', 'Right_Hip', 'Waist', 'Left_Knee', 'Right_Knee',
                       'Upper_Waist', 'Left_Ankle', 'Right_Ankle', 'Chest',
                       'Left_Toe', 'Right_Toe', 'Base_Neck', 'Left_Shoulder',
@@ -158,19 +169,14 @@ def draw_mask(img, mask, thickness=3, color=(255, 0, 0)):
     return img
 
     
-def vis_kpt_2d(json_file, ImgDir, output_dir):
-
-    # ochuman = OCHuman(AnnoFile=json_file, Filter= None)
-    # image_ids = ochuman.getImgIds()
-    # print ('Total images: %d'%len(image_ids))
-
+def vis_kpt_2d(dataset_dir='./3DMPB', output='./output', **kwargs):
+    json_file = os.path.join(dataset_dir, 'annot.json')
     with open(json_file) as f:
-        json_data = json.load(f)
+        annotations = json.load(f)
 
-    for img_id in tqdm(range(len(json_data['images']))):
-        # data = ochuman.loadImgs(imgIds=[img_id])[0]
-        data = json_data['images'][img_id]
-        img = cv2.imread(os.path.join(ImgDir, data['img_file']))
+    for data in annotations:
+
+        img = cv2.imread(os.path.join(dataset_dir, data['img_file']))
         height, width = data['height'], data['width']
 
         colors = [[255, 0, 0], 
@@ -185,38 +191,67 @@ def vis_kpt_2d(json_file, ImgDir, output_dir):
             bbox = [i for j in bbox_tmp for i in j]  # 2*2->4*1
             img = draw_bbox(img, bbox, thickness=3, color=colors[i%len(colors)])
             # vis = data['annotations'][i]['vis']  #14
-            kpt = data['annotations'][i]['smpl_joints_2d']
+            kpt = data['annotations'][i]['lsp_joints_2d']
             mask_file = data['annotations'][i]['mask_file']
-            Maks_dir = ImgDir.replace('images', 'masks')
-            mask = cv2.imread(os.path.join(Maks_dir, mask_file))
+            mask = cv2.imread(os.path.join(dataset_dir, mask_file))
             if kpt is not None:
                 img = draw_skeleton(img, kpt, connection=None, colors=colors[i%len(colors)], bbox=bbox)
             if mask is not None:
                 img = draw_mask(img, mask, thickness=3, color=colors[i%len(colors)])
 
-        # cv2.imshow('img', img)
-        # cv2.waitKey()
-        img_file = os.path.join(output_dir, 'vis_img',data['img_file'])
-        os.makedirs(os.path.dirname(img_file), exist_ok=True)
-        cv2.imwrite(img_file, img)
+        cv2.imshow('img', img)
+        cv2.waitKey()
+        # img_file = os.path.join(output_dir, 'vis_img',data['img_file'])
+        # os.makedirs(os.path.dirname(img_file), exist_ok=True)
+        # cv2.imwrite(img_file, img)
     print('Finish!')
 
 
-def main(**args):
-    json_file = args.pop('json_file')
-    ImgDir = args.pop('ImgDir')
-    output_dir = args.pop('output_dir')
-    vis_kpt_2d(json_file, ImgDir, output_dir)
+def vis_smpl_3d(dataset_dir='./3DMPB', output='./output', **kwargs):
+    json_file = os.path.join(dataset_dir, 'annot.json')
+    with open(json_file) as f:
+        annotations = json.load(f)
 
+    smpl = SMPLModel(device=torch.device('cpu'), model_path='data/SMPL_NEUTRAL.pkl')
+
+    for annot in annotations:
+        
+        img = cv2.imread(os.path.join(dataset_dir, annot['img_file']))
+        render = Renderer(resolution=(img.shape[1], img.shape[0]))
+
+        intri = np.array(annot['intri'], dtype=np.float32)
+        extri = np.eye(4, dtype=np.float32)
+
+        pose, shape, trans = [], [], []
+        for person in annot['annotations']:
+            pose.append(person['pose'])
+            shape.append(person['betas'])
+            trans.append(person['trans'])
+
+        pose = torch.from_numpy(np.array(pose, dtype=np.float32))
+        shape = torch.from_numpy(np.array(shape, dtype=np.float32))
+        trans = torch.from_numpy(np.array(trans, dtype=np.float32))
+
+        verts, joints = smpl(shape, pose, trans)
+
+        img = render.render_multiperson(verts.detach().cpu().numpy(), smpl.faces, np.eye(3), np.zeros((3,)), intri.copy(), img.copy(), viz=True)
+
+
+def main(**kwargs):
+    if kwargs.get('vis_smpl'):
+        vis_smpl_3d(**kwargs)
+    else:
+        vis_kpt_2d(**kwargs)
     
 
 if __name__ == "__main__":
     import argparse
-    sys.argv = ["", "--json_file", "3DMPB/3DMPB.json", "--ImgDir", "3DMPB/images", "--output_dir", "output"]
+    sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output']
+    # sys.argv = ['', '--dataset_dir=3DMPB', '--output_dir=output', '--vis_smpl=True']
     parser = argparse.ArgumentParser()
-    parser.add_argument('--json_file', type=str, help='directory of dataset json file')
-    parser.add_argument('--ImgDir', type=str, help='directory of dataset images')
-    parser.add_argument('--output_dir', type=str, help='directory of output images')
+    parser.add_argument('--dataset_dir', type=str, help='directory of dataset')
+    parser.add_argument('--vis_smpl', default=False, type=bool, help='')
+    parser.add_argument('--output_dir', default='./output', type=str, help='directory of output images')
     args = parser.parse_args()
     args_dict = vars(args)
 

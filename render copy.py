@@ -50,8 +50,8 @@ class Renderer:
         # set the scene
         self.scene = pyrender.Scene(bg_color=[0.0, 0.0, 0.0, 0.0], ambient_light=(0.3, 0.3, 0.3))
         self.colors = {
-            'red': [.8, .1, .1],
-            'bule': [.1, .1, .8], #[.7, .7, .6],#
+            'bule': [.8, .1, .1],
+            'red': [.1, .1, .8], #[.7, .7, .6],#
             'green': [.1, .8, .1],
 
             'pink': [.7, .7, .9],
@@ -81,7 +81,7 @@ class Renderer:
             im = im/255.
         cv2.imshow(name,im)
         if name != 'mask':
-            cv2.waitKey()
+            cv2.waitKey(1)
 
     def add_points_light(self, intensity=1.0, bbox=None):
         light = pyrender.PointLight(color=[1.0, 1.0, 1.0], intensity=intensity)
@@ -175,8 +175,7 @@ class Renderer:
             if vert is None:
                 continue
             else:
-                # vert = vert.detach().cpu().numpy()
-                vert = vert #smpl is based on numpy
+                vert = vert.detach().cpu().numpy()
             color = self.colors[color]
             mesh = trimesh.Trimesh(vertices=vert, faces=faces, process=False)
             material = pyrender.MetallicRoughnessMaterial(
