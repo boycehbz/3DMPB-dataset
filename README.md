@@ -8,7 +8,7 @@ Dataset proposed in "Pose2UV: Single-shot Multi-person Mesh Recovery with Deep U
 <p> Samples of 3DMPB Dataset</p>
 </div>
 
-**3DMPB** is a multi-person dataset in the outdoor sport field with human interaction occlusion and image truncation. This dataset provides comprehensive annotations including bounding-box, human 2D pose, SMPL model annotations, instance mask and camera parameters.
+**3DMPB** is a multi-person dataset in the outdoor sport field with human interaction occlusion and image truncation. This dataset provides annotations including bounding-box, human 2D pose, SMPL model annotations, instance mask and camera parameters.
 
 
 ## Statistics
@@ -21,17 +21,17 @@ Dataset proposed in "Pose2UV: Single-shot Multi-person Mesh Recovery with Deep U
 
 ## Download Links
 
-- [Images & Masks & Annotations]()
+[Baidu Netdisk](https://pan.baidu.com/s/12nB-B-JgcCP2ulVmnWy4Lg?pwd=mo07)
 
-## Installation
+
+## Visualization
 ### Requirements 
 * python3
 * numpy
-* pickle
-* trimesh
+* pytorch
 * pyrender
 ### Prepare dataset 
-Please download the dataset above and extract under `./3DMPB`. Due to the licenses, please download SMPL model file [here](https://smpl.is.tue.mpg.de/). And make them look like this:
+Please download the dataset and extract under `./3DMPB`. Due to the licenses, please download SMPL model file [here](https://smpl.is.tue.mpg.de/). The folder structure is shown as follows:
 ```
 |-- 3DMPB
 `-- |-- images
@@ -50,17 +50,25 @@ Please download the dataset above and extract under `./3DMPB`. Due to the licens
 |-- data
 `-- |-- SMPL_NEUTRAL.pkl    
 ```
-### Code installation
+### Visualization
 #### visualize 2D keypoints and boundingbox
 ```
-git clone https://github.com/boycehbz/3DMPB-dataset.git
-cd/d 3DMPB-dataset
 python vis_dataset.py --dataset_dir 3DMPB  --output_dir output 
 ```
 #### visualize 3D meshes
 ```
-git clone https://github.com/boycehbz/3DMPB-dataset.git
-cd/d 3DMPB-dataset
 python vis_dataset.py --dataset_dir 3DMPB  --output_dir output --vis_smpl True
 ```
 
+## Citation
+If you find this dataset useful for your research, please consider citing the paper.
+```
+@article{huang2022pose2uv,
+  title={Pose2UV: Single-shot Multi-person Mesh Recovery with Deep UV Prior},
+  author={Huang, Buzhen and Zhang, Tianshu and Wang, Yangang},
+  journal={IEEE Transactions on Image Processing},
+  year={2022},
+  volume={31},
+  pages={4679-4692}
+}
+```
