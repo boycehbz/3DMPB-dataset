@@ -16,8 +16,8 @@ Dataset proposed in "Pose2UV: Single-shot Multi-person Mesh Recovery with Deep U
 
 |          | bbox    | keypoint   | mask  | SMPL |
 | -------- | :-----: | :--------: | :----: | :-----:|
-| Images   | 14,538  | 14,538     | 14,538 | 14,538 |
-| Persons  | 26,951  | 26,951     | 26,951 | 26,951 |
+| Images   | 13,665  | 13,665     | 13,665 | 13,665 |
+| Persons  | 25,122  | 25,122     | 25,122 | 25,122 |
 
 ## Download Links
 
@@ -53,13 +53,13 @@ Please download the dataset above and extract under `./3DMPB`. Due to the licens
 ### Code installation
 #### visualize 2D keypoints and boundingbox
 ```
-git clone https://github.com/boycehbz/3DMPB-dataset
+git clone https://github.com/boycehbz/3DMPB-dataset.git
 cd/d 3DMPB-dataset
 python vis_dataset.py --dataset_dir 3DMPB  --output_dir output 
 ```
 #### visualize 3D meshes
 ```
-git clone https://github.com/boycehbz/3DMPB-dataset
+git clone https://github.com/boycehbz/3DMPB-dataset.git
 cd/d 3DMPB-dataset
 python vis_dataset.py --dataset_dir 3DMPB  --output_dir output --vis_smpl True
 ```
