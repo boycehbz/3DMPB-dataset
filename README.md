@@ -21,7 +21,7 @@ Dataset proposed in "Pose2UV: Single-shot Multi-person Mesh Recovery with Deep U
 
 ## Download Links
 
-[Baidu Netdisk](https://pan.baidu.com/s/12nB-B-JgcCP2ulVmnWy4Lg?pwd=mo07)
+\[[Baidu Netdisk](https://pan.baidu.com/s/12nB-B-JgcCP2ulVmnWy4Lg?pwd=mo07)\]
 
 
 ## Visualization
