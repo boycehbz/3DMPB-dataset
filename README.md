@@ -31,7 +31,7 @@ Dataset proposed in "Pose2UV: Single-shot Multi-person Mesh Recovery with Deep U
 * pytorch
 * pyrender
 ### Prepare dataset 
-Please download the dataset and extract under `./3DMPB`. Due to the licenses, please download SMPL model file [here](https://smpl.is.tue.mpg.de/). The folder structure is shown as follows:
+Please download the dataset and extract under `./3DMPB`. Due to the licenses, please download SMPL model file [here](http://smplify.is.tuebingen.mpg.de/). The folder structure is shown as follows:
 ```
 |-- 3DMPB
 `-- |-- images
