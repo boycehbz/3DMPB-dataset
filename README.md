@@ -24,6 +24,8 @@ Dataset proposed in "Pose2UV: Single-shot Multi-person Mesh Recovery with Deep U
 
 
 We also provide full videos for 3DMPB dataset.
+
+
 \[[3DMPB-video](https://pan.baidu.com/s/19OZSEOu330Gul89IobKvbQ?pwd=xcyv)\]
 
 
