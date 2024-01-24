@@ -20,8 +20,8 @@ Dataset proposed in "Pose2UV: Single-shot Multi-person Mesh Recovery with Deep U
 | Persons  | 25,122  | 25,122     | 25,122 | 25,122 |
 
 ## Download Links
-\[[3DMPB](https://pan.baidu.com/s/12nB-B-JgcCP2ulVmnWy4Lg?pwd=mo07)\]
-
+\[[Baidu Netdisk](https://pan.baidu.com/s/12nB-B-JgcCP2ulVmnWy4Lg?pwd=mo07)\]
+\[[Google Drive](https://drive.google.com/file/d/1sBOfnv8i98vcGytH_s2GstHPNscCEho5/view?usp=sharing)\]
 
 We also provide full videos for 3DMPB dataset.
 
